@@ -3,3 +3,8 @@ dist
 .DS_Store
 *.local
 .claude/
+.next/
+*.db
+*.db-journal
+.env
+.env.local

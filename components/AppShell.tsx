@@ -1,0 +1,255 @@
+"use client";
+
+import { ReactNode, useState } from "react";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { ThemeProvider, useTheme } from "@/components/providers/ThemeProvider";
+import { Sidebar } from "@/components/Sidebar";
+import { ProjectModal } from "@/components/modals/ProjectModal";
+import { ProjectSettingsModal } from "@/components/modals/ProjectSettingsModal";
+import { TaskModal } from "@/components/modals/TaskModal";
+import { Stats } from "@/lib/constants";
+
+type TaskUser = { id: string; name: string | null; image: string | null };
+type Task = {
+  id: string;
+  title: string;
+  type: string;
+  status: string;
+  startDate: Date | null;
+  dueDate: Date | null;
+  description: string | null;
+  createdAt: Date;
+  projectId: string;
+  assignees: Array<{ user: TaskUser }>;
+};
+type Member = { id: string; role: string; userId: string; user: TaskUser };
+type Project = {
+  id: string;
+  name: string;
+  description: string | null;
+  colorId: string;
+  createdAt: Date;
+  ownerId: string;
+  tasks: Task[];
+  members: Member[];
+};
+
+interface AppShellProps {
+  projects: Project[];
+  stats: Stats;
+  user: { id: string; name: string | null; image: string | null };
+  children: ReactNode;
+}
+
+function Shell({ projects, stats, user, children }: AppShellProps) {
+  const { mode, toggleMode, atmosphere, setAtmosphere, setProjectColorId } = useTheme();
+  const [showNewProject, setShowNewProject] = useState(false);
+  const [showProjectSettings, setShowProjectSettings] = useState(false);
+  const [showAddTask, setShowAddTask] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useParams();
+
+  const projectId = params?.projectId as string | undefined;
+
+  // Determine active view from pathname
+  function getView() {
+    if (pathname.includes("/kanban")) return "kanban";
+    if (pathname.includes("/list")) return "list";
+    if (pathname.includes("/timeline")) return "timeline";
+    if (pathname.includes("/notes")) return "notes";
+    if (pathname.includes("/shipped")) return "shipped";
+    return "dashboard";
+  }
+
+  function onViewChange(view: string) {
+    // kanban/list/timeline are always global (cross-project); only notes/shipped/dashboard are also global
+    router.push(`/${view}`);
+  }
+
+  function onSelectProject(pid: string) {
+    setProjectColorId(projects.find((p) => p.id === pid)?.colorId || "rose");
+    router.push(`/projects/${pid}/kanban`);
+  }
+
+  // Update accent when project changes
+  const activeProject = projectId ? projects.find((p) => p.id === projectId) : null;
+
+  const VIEW_LABELS: Record<string, string> = {
+    dashboard: "Dashboard",
+    kanban: "Kanban Board",
+    list: "List View",
+    timeline: "Timeline",
+    notes: "Notes",
+    shipped: "What I Shipped",
+  };
+
+  const currentView = getView();
+  // Global when not inside a project URL, or when on dashboard/notes/shipped
+  const isGlobal = !pathname.includes("/projects/") || ["dashboard", "notes", "shipped"].includes(currentView);
+
+  return (
+    <div style={{ display: "flex", width: "100%", height: "100%" }}>
+      <Sidebar
+        projects={projects}
+        activeProjectId={projectId}
+        onSelectProject={onSelectProject}
+        onNewProject={() => setShowNewProject(true)}
+        activeView={currentView}
+        onViewChange={onViewChange}
+        notesCount={0}
+        mode={mode}
+        onToggleMode={toggleMode}
+        atmosphere={atmosphere}
+        onAtmosphere={setAtmosphere}
+        stats={stats}
+        user={user}
+        collapsed={sidebarCollapsed}
+        onToggleCollapse={() => setSidebarCollapsed((v) => !v)}
+      />
+
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", minWidth: 0 }}>
+        {/* Top header */}
+        <div
+          style={{
+            padding: "16px 26px",
+            borderBottom: "1px solid var(--border)",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            background: "var(--surface)",
+            backdropFilter: "var(--backdrop-val)",
+            flexShrink: 0,
+          }}
+        >
+          <div style={{ minWidth: 0 }}>
+            <h1 style={{ fontSize: 20, fontWeight: 800, letterSpacing: -0.3, color: "var(--text)" }}>
+              {isGlobal ? VIEW_LABELS[currentView] : activeProject?.name || "Select a project"}
+            </h1>
+            {activeProject && !isGlobal && (
+              <p
+                style={{
+                  fontSize: 12,
+                  color: "var(--text3)",
+                  marginTop: 2,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {activeProject.description} · {VIEW_LABELS[currentView]}
+              </p>
+            )}
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            {!isGlobal && activeProject && (
+              <button
+                onClick={() => setShowProjectSettings(true)}
+                title="Project settings"
+                style={{ background: "var(--surface3)", border: "1px solid var(--border2)", borderRadius: 10, padding: "10px 12px", fontSize: 15, cursor: "pointer", color: "var(--text2)", flexShrink: 0 }}
+              >
+                ⚙️
+              </button>
+            )}
+            {projects.length > 0 && (
+              <button
+                onClick={() => setShowAddTask(true)}
+                style={{
+                  background: "var(--accent)",
+                  color: "#FFF",
+                  border: "none",
+                  borderRadius: 10,
+                  padding: "10px 18px",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  flexShrink: 0,
+                  fontFamily: "'Manrope', sans-serif",
+                }}
+              >
+                + Add Task
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Page content */}
+        <div style={{ flex: 1, overflow: "auto", padding: 22, minHeight: 0 }}>
+          {children}
+        </div>
+      </div>
+
+      {showAddTask && (
+        <TaskModal
+          open={showAddTask}
+          onClose={() => setShowAddTask(false)}
+          projects={projects.map((p) => ({ id: p.id, name: p.name }))}
+          initialProjectId={activeProject?.id}
+          onSave={async (data) => {
+            const pid = data.projectId || activeProject?.id;
+            if (!pid) return;
+            await fetch("/api/tasks", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ projectId: pid, title: data.title, type: data.type, status: data.status, startDate: data.startDate, dueDate: data.dueDate }),
+            });
+            setShowAddTask(false);
+            router.refresh();
+          }}
+        />
+      )}
+
+      {showNewProject && (
+        <ProjectModal
+          onClose={() => setShowNewProject(false)}
+          onSave={async (proj) => {
+            const res = await fetch("/api/projects", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(proj),
+            });
+            if (res.ok) {
+              const data = await res.json();
+              setShowNewProject(false);
+              router.push(`/projects/${data.id}/kanban`);
+              router.refresh();
+            }
+          }}
+        />
+      )}
+
+      {showProjectSettings && activeProject && (
+        <ProjectSettingsModal
+          projectId={activeProject.id}
+          name={activeProject.name}
+          description={activeProject.description}
+          colorId={activeProject.colorId}
+          members={activeProject.members}
+          currentUserId={user.id}
+          onClose={() => setShowProjectSettings(false)}
+          onUpdate={async (updates) => {
+            await fetch(`/api/projects/${activeProject.id}`, {
+              method: "PATCH",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(updates),
+            });
+            router.refresh();
+          }}
+          onRemoveMember={async (memberId) => {
+            await fetch(`/api/members/${memberId}`, { method: "DELETE" });
+            router.refresh();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+export function AppShell(props: AppShellProps) {
+  return (
+    <ThemeProvider>
+      <Shell {...props} />
+    </ThemeProvider>
+  );
+}

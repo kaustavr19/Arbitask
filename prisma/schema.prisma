@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Dev: sqlite + file:./prisma/dev.db
+// Prod: change provider to "postgresql", add directUrl, restore @db.Text if needed
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── NextAuth required models ────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime  @default(now())
+
+  accounts      Account[]
+  sessions      Session[]
+  ownedProjects Project[]       @relation("ProjectOwner")
+  memberships   ProjectMember[]
+  assignedTasks TaskAssignee[]
+  notes         Note[]
+  invitesSent   Invite[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ─── App models ──────────────────────────────────────────────────────────────
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  colorId     String   @default("rose")
+  createdAt   DateTime @default(now())
+  ownerId     String
+
+  owner   User            @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  tasks   Task[]
+  members ProjectMember[]
+  invites Invite[]
+  notes   Note[]
+}
+
+// Role: "OWNER" | "ADMIN" | "MEMBER" | "VIEWER"
+model ProjectMember {
+  id        String   @id @default(cuid())
+  projectId String
+  userId    String
+  role      String   @default("MEMBER")
+  joinedAt  DateTime @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+}
+
+model Task {
+  id          String    @id @default(cuid())
+  title       String
+  type        String    @default("dev")
+  status      String    @default("idea")
+  startDate   DateTime?
+  dueDate     DateTime?
+  description String?
+  createdAt   DateTime  @default(now())
+  projectId   String
+
+  project   Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignees TaskAssignee[]
+}
+
+model TaskAssignee {
+  id     String @id @default(cuid())
+  taskId String
+  userId String
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, userId])
+}
+
+model Note {
+  id        String   @id @default(cuid())
+  title     String
+  content   String
+  projectId String?
+  authorId  String
+  createdAt DateTime @default(now())
+
+  project Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  author  User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+// InviteStatus: "PENDING" | "ACCEPTED" | "EXPIRED"
+model Invite {
+  id        String   @id @default(cuid())
+  token     String   @unique @default(cuid())
+  projectId String
+  senderId  String
+  role      String   @default("MEMBER")
+  status    String   @default("PENDING")
+  expiresAt DateTime
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sender  User    @relation(fields: [senderId], references: [id], onDelete: Cascade)
+}
