@@ -1,79 +1,134 @@
-# ⚡ Arbitask (IdeaForge v4)
+# ⚡ Arbitask
 
-A gamified project & idea management app built with React. Turn raw ideas into shipped projects — with Kanban boards, timelines, notes, and an XP/leveling system to keep you motivated.
+A gamified project & idea management app — turn raw ideas into shipped work. Kanban boards, timelines, notes, collaboration, and an XP leveling system to keep you motivated.
 
-![Dashboard](https://img.shields.io/badge/React-18-61DAFB?style=flat&logo=react) ![Vite](https://img.shields.io/badge/Vite-6-646CFF?style=flat&logo=vite) ![License](https://img.shields.io/badge/license-MIT-green?style=flat)
+![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat&logo=next.js) ![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?style=flat&logo=typescript) ![Prisma](https://img.shields.io/badge/Prisma-5-2D3748?style=flat&logo=prisma) ![Auth.js](https://img.shields.io/badge/Auth.js-v5-purple?style=flat) ![License](https://img.shields.io/badge/license-MIT-green?style=flat)
 
 ---
 
 ## Features
 
-- **Dashboard** — XP bar, level progression, achievement badges, and productivity stats at a glance
+### Core
+- **Dashboard** — XP bar, level progression, achievement badges, and productivity stats
 - **Kanban Board** — drag-and-drop tasks across status columns (Idea → Planned → In Progress → Blocked → Done)
-- **List View** — sortable table view of all tasks with inline status editing
-- **Timeline** — Gantt-style visual of tasks with start/due dates
-- **Notes** — markdown editor with slash commands (`/h1`, `/bullet`, `/code`, etc.) and live preview
-- **Shipped** — dedicated view for all completed tasks across projects
-- **Gamification** — earn XP for completing tasks, writing notes, and creating projects; level up through 8 tiers
-- **Achievements** — 15 unlockable badges (First Blood, Hat Trick, Grand Master, etc.)
+- **List View** — sortable table view with inline status editing
+- **Timeline** — Gantt-style visualization for tasks with start/due dates
+- **Notes** — markdown editor with slash commands (`/h1`, `/bullet`, `/code`, …) and a fullscreen editing mode
+- **Shipped** — dedicated view for all completed tasks
+
+### Collaboration
+- **Multi-user projects** — invite collaborators via a shareable link
+- **Role-based access** — Owner · Admin · Member · Viewer
+- **Task assignees** — assign one or more project members to any task; avatar chips shown on cards
+- **Project settings** — manage members, update project details, generate invite links
+
+### Navigation & UX
+- **Global views** — Kanban, List, and Timeline at `/kanban`, `/list`, `/timeline` show tasks across **all** your projects, with a project filter dropdown
+- **Project canvas** — clicking a project opens a per-project workspace with a tab bar (Kanban · List · Timeline · Notes · Shipped)
+- **Project-independent Add Task** — the header "+ Add Task" button is always visible and lets you pick the project inside the modal
+- **Collapsible sidebar** — click `«` to collapse to an icon-only strip; `»` to expand
 - **Themes** — dark/light mode + 3 atmosphere backgrounds (Ocean, Aurora, Minimal)
-- **Project colors** — each project gets its own accent color that themes the entire UI
+- **Project accent colors** — each project colors the entire UI when active
+
+### Gamification
+- Earn XP for completing tasks, writing notes, creating projects
+- 8 levels from 💭 Dreamer → 🔱 Mythic
+- 15 unlockable achievement badges
 
 ---
 
 ## Tech Stack
 
-| Tool | Purpose |
-|------|---------|
-| React 18 | UI framework |
-| Vite 6 | Dev server & bundler |
-| CSS-in-JS (inline styles) | Styling — no external CSS library |
-| Google Fonts | Bricolage Grotesque, Manrope, JetBrains Mono |
-
-No backend, no database — all state lives in React (in-memory, resets on refresh).
+| Layer | Tool |
+|-------|------|
+| Framework | [Next.js 15](https://nextjs.org/) — App Router, RSC, Server Actions |
+| Language | TypeScript 5 |
+| Auth | [Auth.js v5](https://authjs.dev/) — Google OAuth + Credentials provider |
+| Database | [Prisma 5](https://www.prisma.io/) ORM — SQLite (dev) / PostgreSQL (prod) |
+| Styling | CSS-in-JS (inline styles) — zero external CSS library |
+| Fonts | Bricolage Grotesque, Manrope, JetBrains Mono (Google Fonts) |
 
 ---
 
 ## Project Structure
 
 ```
-src/
-├── App.jsx                        # Root component, state management
-├── main.jsx                       # React entry point
-├── constants/
-│   └── index.js                   # TASK_TYPES, STATUSES, PROJECT_COLORS,
-│                                  # ATMOSPHERES, SLASH_COMMANDS, LEVELS, ACHIEVEMENTS
-├── data/
-│   └── initialData.js             # Seed projects and notes
-├── styles/
-│   └── fonts.js                   # Font vars + injected global CSS
-├── utils/
-│   ├── gamification.js            # XP & level calculation
-│   ├── helpers.js                 # gid(), fmtDate()
-│   ├── markdown.js                # Markdown → HTML renderer
-│   └── theme.js                   # CSS variable builder, stC()
-└── components/
-    ├── Sidebar.jsx                # Navigation, project list, level badge
-    ├── FormattingToolbar.jsx      # Markdown toolbar (bold, italic, etc.)
-    ├── SlashMenu.jsx              # / command palette in note editors
-    ├── ui/
-    │   ├── Btn.jsx                # Button (primary/secondary/ghost/danger)
-    │   ├── Badge.jsx              # Colored tag badge
-    │   ├── Modal.jsx              # Generic modal wrapper
-    │   ├── Empty.jsx              # Empty state placeholder
-    │   ├── Label.jsx              # Form field label
-    │   └── index.js               # Barrel export
-    ├── views/
-    │   ├── DashboardView.jsx      # XP hero, stats, achievements
-    │   ├── KanbanView.jsx         # Drag-and-drop board
-    │   ├── ListView.jsx           # Sortable task table
-    │   ├── TimelineView.jsx       # Gantt timeline
-    │   ├── NotesView.jsx          # Notes list + markdown editor
-    │   └── ShippedView.jsx        # Completed tasks summary
-    └── modals/
-        ├── TaskModal.jsx          # Add task form
-        ├── ProjectModal.jsx       # New project form
-        └── TaskDetailModal.jsx    # Full task edit with markdown description
+/
+├── app/
+│   ├── layout.tsx                          # Root layout
+│   ├── page.tsx                            # → redirects to /dashboard
+│   ├── login/page.tsx                      # Sign-in page (Google + demo)
+│   ├── invite/[token]/page.tsx             # Invite accept page (public)
+│   ├── (app)/                              # Auth-protected route group
+│   │   ├── layout.tsx                      # Fetches projects, wraps AppShell
+│   │   ├── dashboard/page.tsx
+│   │   ├── kanban/page.tsx                 # Global kanban (all projects)
+│   │   ├── list/page.tsx                   # Global list
+│   │   ├── timeline/page.tsx               # Global timeline
+│   │   ├── notes/page.tsx
+│   │   ├── shipped/page.tsx
+│   │   └── projects/[projectId]/
+│   │       ├── layout.tsx                  # Tab bar (Kanban·List·Timeline·Notes·Shipped)
+│   │       ├── kanban/page.tsx
+│   │       ├── list/page.tsx
+│   │       ├── timeline/page.tsx
+│   │       ├── notes/page.tsx
+│   │       └── shipped/page.tsx
+│   ├── api/
+│   │   ├── auth/[...nextauth]/route.ts
+│   │   ├── projects/route.ts               # GET list, POST create
+│   │   ├── projects/[projectId]/route.ts   # PATCH, DELETE
+│   │   ├── tasks/route.ts                  # POST create
+│   │   ├── tasks/[taskId]/route.ts         # PATCH, DELETE
+│   │   ├── tasks/[taskId]/assignees/route.ts
+│   │   ├── notes/route.ts
+│   │   ├── notes/[noteId]/route.ts
+│   │   ├── members/route.ts
+│   │   ├── members/[memberId]/route.ts
+│   │   ├── invites/route.ts                # POST create invite
+│   │   └── invites/[token]/route.ts        # GET validate, POST accept
+│   └── globals.css
+│
+├── components/
+│   ├── AppShell.tsx                        # Client shell: sidebar + header + modals
+│   ├── Sidebar.tsx                         # Collapsible nav (expanded / icon-only)
+│   ├── FormattingToolbar.tsx
+│   ├── SlashMenu.tsx
+│   ├── providers/
+│   │   ├── ThemeProvider.tsx               # Dark/light, atmosphere, accent color
+│   │   └── SessionProvider.tsx
+│   ├── ui/
+│   │   ├── Avatar.tsx                      # User avatar (image or initials)
+│   │   ├── AssigneeSelector.tsx            # Multi-select member picker
+│   │   ├── Btn.tsx · Badge.tsx · Modal.tsx · Empty.tsx
+│   │   └── index.ts
+│   ├── views/
+│   │   ├── DashboardView.tsx
+│   │   ├── KanbanView.tsx                  # Single-project or global multi-project
+│   │   ├── ListView.tsx
+│   │   ├── TimelineView.tsx
+│   │   ├── NotesView.tsx
+│   │   └── ShippedView.tsx
+│   └── modals/
+│       ├── TaskModal.tsx                   # Add task (with project selector)
+│       ├── TaskDetailModal.tsx             # Edit task + assignees
+│       ├── ProjectModal.tsx
+│       └── ProjectSettingsModal.tsx        # Members + invite link
+│
+├── lib/
+│   ├── auth.ts                             # Auth.js config
+│   ├── db.ts                               # Prisma singleton
+│   ├── actions.ts                          # Server actions (sign-in, createProject)
+│   ├── auth-helpers.ts                     # requireProjectMember/Admin
+│   ├── constants.ts                        # Role, InviteStatus, TASK_TYPES, etc.
+│   ├── gamification.ts · helpers.ts · markdown.ts · theme.ts · fonts.ts
+│
+├── prisma/
+│   └── schema.prisma
+├── middleware.ts                           # Protect all routes except /login, /invite/*
+├── .env.local.example
+├── next.config.ts
+└── tsconfig.json
 ```
 
 ---
@@ -82,71 +137,113 @@ src/
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) v18 or higher
-- npm (comes with Node)
+- [Node.js](https://nodejs.org/) v18+
+- npm
 
-### Installation
+### 1. Clone & install
 
 ```bash
-# Clone the repo
 git clone https://github.com/kaustavr19/Arbitask.git
 cd Arbitask
-
-# Install dependencies
 npm install
+```
 
-# Start the dev server
+### 2. Configure environment
+
+Copy the example and fill in the values:
+
+```bash
+cp .env.local.example .env.local
+```
+
+```env
+# .env.local
+NEXTAUTH_SECRET=<run: openssl rand -base64 32>
+NEXTAUTH_URL=http://localhost:3000
+
+# Google OAuth (from console.cloud.google.com)
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Database — SQLite for local dev (no setup needed)
+DATABASE_URL=file:./prisma/dev.db
+```
+
+> **Google OAuth setup:** Create a project at [console.cloud.google.com](https://console.cloud.google.com), enable the Google+ API, create OAuth 2.0 credentials, and add `http://localhost:3000/api/auth/callback/google` as an authorised redirect URI.
+>
+> Leave `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` empty to use **demo login only**.
+
+Also create `.env` (for the Prisma CLI):
+
+```bash
+echo 'DATABASE_URL="file:./prisma/dev.db"' > .env
+```
+
+### 3. Set up the database
+
+```bash
+npx prisma db push      # creates prisma/dev.db and applies the schema
+npx prisma generate     # generates the Prisma client
+```
+
+### 4. Run the dev server
+
+```bash
 npm run dev
 ```
 
-Open **http://localhost:5173** in your browser.
+Open **http://localhost:3000** — you'll be redirected to the login page.
 
-### Build for Production
+### 5. Sign in
 
-```bash
-npm run build      # outputs to /dist
-npm run preview    # preview the production build locally
-```
+- **Demo (no OAuth needed):** use `demo@arbitask.app` / `demo1234`
+- **Google:** click "Continue with Google" (requires OAuth credentials configured above)
 
 ---
 
 ## Usage Guide
 
-### Managing Projects
+### Projects
 
-1. Click **+ New idea...** in the bottom of the sidebar, or the **+** icon next to "Projects"
-2. Give your project a name, description, and pick a color
-3. The project color themes the entire UI when that project is active
-4. Click any project in the sidebar to switch to it
+| Action | How |
+|--------|-----|
+| Create a project | Click **+ New idea…** at the bottom of the sidebar, or **+** next to "PROJECTS" |
+| Open a project | Click its name in the sidebar → lands on the project Kanban with the tab bar |
+| Edit / delete | Click the **⚙️** icon in the top-right header while inside a project |
+| Switch accent color | Edit project → pick a new color → the whole UI recolors instantly |
 
-### Working with Tasks
+### Tasks
 
-**Adding tasks**
-- In Kanban view, click **+ Add task** under any column
-- Or click **+ Add Task** in the top-right header
-- Fill in title, type (Design / Dev / Research / Content / Marketing / Other), status, and optional dates
+| Action | How |
+|--------|-----|
+| Add a task | Click **+ Add Task** (header, always visible) — choose project inside the modal |
+| Add to a column | Click **+ Add task** at the bottom of any Kanban column |
+| Move status | Drag a card to another column, or use the inline dropdown in List view |
+| Edit details | Click any task card to open the detail modal (description, dates, assignees) |
+| Delete | Click **✕** on a card (Kanban) or row (List) |
 
-**Editing tasks**
-- Click any task card to open the full detail modal
-- Write a description in markdown — use the formatting toolbar or type `/` for the slash command palette
-- Toggle between **Write** and **Preview** tabs to see rendered markdown
+**Task types:** Design · Dev · Research · Content · Marketing · Other
 
-**Moving tasks (Kanban)**
-- Drag and drop task cards between status columns
-- Or use the inline status dropdown in List view
+**Statuses:** 💡 Idea → 📋 Planned → 🔥 In Progress → 🚧 Blocked → ✅ Done → 📦 Archived
 
-**Deleting tasks**
-- Click the **✕** button on a task card (Kanban) or row (List view)
+### Global Views vs Project Views
+
+| View | URL | Shows |
+|------|-----|-------|
+| Global Kanban | `/kanban` | All tasks, all projects — filter by project dropdown |
+| Global List | `/list` | Same, with a "Project" column |
+| Global Timeline | `/timeline` | Same, with project prefix on task labels |
+| Project Kanban | `/projects/[id]/kanban` | Only that project's tasks, no filter needed |
+| Project Notes | `/projects/[id]/notes` | Notes linked to that project |
 
 ### Notes
 
-1. Navigate to **Notes** in the sidebar
-2. Click **+ New** to create a note
-3. Optionally link a note to a project
-4. In the editor, type `/` to open the slash command menu:
+1. Go to **Notes** in the sidebar (or a project's Notes tab)
+2. Click **+ New** to create a note — optionally link it to a project
+3. Type `/` in the editor to open the slash command palette:
 
-| Command | Output |
-|---------|--------|
+| Command | Inserts |
+|---------|---------|
 | `/h1` | `# Heading 1` |
 | `/h2` | `## Heading 2` |
 | `/bullet` | `- list item` |
@@ -157,11 +254,48 @@ npm run preview    # preview the production build locally
 | `/bold` | `**text**` |
 | `/callout` | `> 💡 callout` |
 
-5. Click **Edit** on a saved note to modify it; **Delete** to remove it
+4. Click **⛶** to open the note in a **fullscreen editor** for distraction-free writing
+5. Click **Edit** to modify inline; **Delete** to remove
 
-### Gamification
+### Collaboration
 
-XP is earned automatically based on your activity:
+**Inviting collaborators:**
+
+1. Open a project and click **⚙️** → **Project Settings**
+2. Go to the **Invite** section → click **Generate Link**
+3. Copy and share the link — it's valid for 7 days
+4. The recipient opens the link, signs in (Google or demo), and clicks **Accept** — they're added as a Member
+
+**Managing members:**
+
+- In Project Settings → Members tab, see all members with their roles
+- Admins and Owners can remove members (except the Owner)
+
+**Roles:**
+
+| Role | Can do |
+|------|--------|
+| Owner | Everything — cannot be removed |
+| Admin | Edit project, manage members, invite |
+| Member | Create/edit/delete tasks and notes |
+| Viewer | Read-only |
+
+### Sidebar
+
+- Click **«** to collapse the sidebar to a 56px icon-only strip — hover icons for tooltips
+- Click **»** to expand back to full width
+
+### Themes & Appearance
+
+- **☀️ / 🌙** — toggle dark/light mode
+- **Ocean / Aurora / Minimal** — change the background atmosphere
+- Active project color automatically sets the accent color across the UI
+
+---
+
+## Gamification
+
+XP is calculated automatically from your activity:
 
 | Action | XP |
 |--------|----|
@@ -172,10 +306,10 @@ XP is earned automatically based on your activity:
 | Project created | +20 XP |
 | Task with description | +5 XP |
 
-**Levels** (8 tiers):
+**Levels (8 tiers):**
 
-| Level | Title | XP Required |
-|-------|-------|-------------|
+| Level | Title | XP Needed |
+|-------|-------|-----------|
 | 1 | 💭 Dreamer | 0 |
 | 2 | 🔧 Tinkerer | 100 |
 | 3 | 🏗️ Builder | 250 |
@@ -185,57 +319,88 @@ XP is earned automatically based on your activity:
 | 7 | 👑 Legend | 1800 |
 | 8 | 🔱 Mythic | 2500 |
 
-Check the **Dashboard** view to see your XP breakdown, level progress, and unlocked achievements.
+Visit the **Dashboard** to see your XP breakdown, level progress bar, and unlocked achievements.
 
-### Themes & Appearance
+---
 
-- Click the **☀️ / 🌙** button in the top-left to toggle dark/light mode
-- Use the **Ocean / Aurora / Minimal** buttons to change the background atmosphere
-- The active project's color automatically updates the accent color throughout the UI
+## Deploying to Production
+
+### Database
+
+Switch from SQLite to [Neon](https://neon.tech) (PostgreSQL, free tier):
+
+1. Create a Neon project and copy the connection strings
+2. In `prisma/schema.prisma`, change the datasource:
+
+```prisma
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+```
+
+3. Update `.env.local`:
+
+```env
+DATABASE_URL=postgres://...  # pooled connection (Neon)
+DIRECT_URL=postgres://...    # direct connection (for migrations)
+```
+
+4. Run `npx prisma migrate deploy`
+
+### Deploy on Vercel
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+vercel
+```
+
+Set all `.env.local` variables in the Vercel dashboard under **Settings → Environment Variables**. Update `NEXTAUTH_URL` to your production domain and add the production callback URL to your Google OAuth app.
 
 ---
 
 ## Customization
 
-### Adding a new task type
+### Add a task type
 
-In `src/constants/index.js`, add an entry to `TASK_TYPES`:
+In `lib/constants.ts`, add to `TASK_TYPES`:
 
-```js
+```ts
 { id: "ops", label: "Ops", icon: "⚙️" }
 ```
 
-### Adding a new achievement
+### Add an achievement
 
-In `src/constants/index.js`, add an entry to `ACHIEVEMENTS`:
+In `lib/constants.ts`, add to `ACHIEVEMENTS`:
 
-```js
+```ts
 {
   id: "overachiever",
   title: "Overachiever",
   desc: "Complete 25 tasks",
   emoji: "🌟",
-  check: (s) => s.done >= 25
+  check: (s: Stats) => s.done >= 25,
 }
 ```
 
-The `check` function receives the `stats` object from `calcStats()` — refer to `src/utils/gamification.js` for all available fields.
+The `check` function receives the `Stats` object from `calcStats()` — see `lib/gamification.ts` for all available fields.
 
-### Persisting data
+---
 
-State currently resets on page refresh. To add persistence, wrap the `useState` calls in `src/App.jsx` with `localStorage`:
+## Legacy Documentation
 
-```js
-// Example for projects
-const [projects, setProjects] = useState(() => {
-  const saved = localStorage.getItem("arbitask_projects");
-  return saved ? JSON.parse(saved) : INIT_PROJECTS;
-});
+The original **v4 Vite SPA** (React 18 + Vite 6, no backend, in-memory state) is documented at:
 
-// Persist on change
-useEffect(() => {
-  localStorage.setItem("arbitask_projects", JSON.stringify(projects));
-}, [projects]);
+📄 **[docs/v4-vite-spa.md](./docs/v4-vite-spa.md)**
+
+To run the legacy version, checkout the last Vite commit:
+
+```bash
+git checkout a17b7c0
+npm install
+npm run dev   # http://localhost:5173
 ```
 
 ---
