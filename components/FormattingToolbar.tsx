@@ -3,7 +3,6 @@
 import { RefObject } from "react";
 import { TOOLBAR_ITEMS } from "@/lib/constants";
 
-const BODY = `'Manrope', sans-serif`;
 const MONO = `'JetBrains Mono', monospace`;
 
 interface FormattingToolbarProps {
@@ -65,7 +64,7 @@ export function FormattingToolbar({ textareaRef, value, onChange }: FormattingTo
             borderRadius: 6,
             fontSize: 12,
             fontWeight: 700,
-            fontFamily: item.id === "code" ? MONO : BODY,
+            fontFamily: item.id === "code" ? MONO : "inherit",
             transition: "all .15s",
             minWidth: 28,
             textAlign: "center",

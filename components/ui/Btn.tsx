@@ -2,8 +2,6 @@
 
 import { CSSProperties, ReactNode } from "react";
 
-const BODY = `'Manrope', sans-serif`;
-
 interface BtnProps {
   children: ReactNode;
   onClick?: () => void;
@@ -16,11 +14,10 @@ interface BtnProps {
 
 export function Btn({ children, onClick, variant = "primary", size = "md", style = {}, disabled, type = "button" }: BtnProps) {
   const base: CSSProperties = {
-    fontFamily: BODY,
-    fontWeight: 600,
+    fontWeight: 500,
     border: "none",
     cursor: disabled ? "not-allowed" : "pointer",
-    borderRadius: 10,
+    borderRadius: 7,
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",

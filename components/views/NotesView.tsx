@@ -2,8 +2,6 @@
 
 import { useState, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { DISPLAY, BODY } from "@/lib/fonts";
-import { PROJECT_COLORS } from "@/lib/constants";
 import { fmtDate } from "@/lib/helpers";
 import { renderMd } from "@/lib/markdown";
 import { Btn, Badge, Empty } from "@/components/ui";
@@ -143,17 +141,16 @@ export function NotesView({ notes, projects, defaultProjectId }: NotesViewProps)
           )}
           {notes.map((n) => {
             const proj = projects.find((p) => p.id === n.projectId);
-            const npc = proj ? (PROJECT_COLORS.find((c) => c.id === proj.colorId) || PROJECT_COLORS[0]) : null;
             return (
               <button
                 key={n.id}
                 onClick={() => { setActiveNoteId(n.id); setEditing(false); }}
-                style={{ display: "block", width: "100%", textAlign: "left", padding: 10, borderRadius: 9, border: "none", cursor: "pointer", marginBottom: 3, fontFamily: BODY, background: activeNoteId === n.id ? "var(--accent-soft)" : "transparent", color: activeNoteId === n.id ? "var(--accent-text)" : "var(--text2)" }}
+                style={{ display: "block", width: "100%", textAlign: "left", padding: 10, borderRadius: 7, border: "none", cursor: "pointer", marginBottom: 2, background: activeNoteId === n.id ? "var(--accent-soft)" : "transparent", color: activeNoteId === n.id ? "var(--accent-text)" : "var(--text2)" }}
               >
-                <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n.title}</div>
+                <div style={{ fontSize: 13, fontWeight: 500, marginBottom: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n.title}</div>
                 <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
                   <span style={{ fontSize: 10, color: "var(--text3)" }}>{fmtDate(n.createdAt)}</span>
-                  {npc && proj && <Badge color={npc.hex} style={{ fontSize: 9, padding: "1px 6px" }}>{proj.name}</Badge>}
+                  {proj && <Badge color="var(--accent)" style={{ fontSize: 9, padding: "1px 6px" }}>{proj.name}</Badge>}
                 </div>
               </button>
             );
@@ -170,7 +167,7 @@ export function NotesView({ notes, projects, defaultProjectId }: NotesViewProps)
             <input
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
-              style={{ fontSize: 20, fontWeight: 700, fontFamily: DISPLAY, background: "transparent", border: "none", borderBottom: "2px solid var(--accent)", borderRadius: 0, padding: "8px 0", marginBottom: 14, width: "100%", color: "var(--text)", outline: "none" }}
+              style={{ fontSize: 20, fontWeight: 700, background: "transparent", border: "none", borderBottom: "2px solid var(--accent)", borderRadius: 0, padding: "8px 0", marginBottom: 14, width: "100%", color: "var(--text)", outline: "none" }}
             />
             <div style={{ position: "relative" }}>
               <textarea ref={editRef} value={editContent} onChange={(e) => handleTA(e, "edit")} rows={16} placeholder="Write in markdown... Type / for commands" />
@@ -188,11 +185,11 @@ export function NotesView({ notes, projects, defaultProjectId }: NotesViewProps)
           <div>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
               <div>
-                <h1 style={{ fontSize: 22, fontWeight: 800, fontFamily: DISPLAY, marginBottom: 4 }}>{note.title}</h1>
+                <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 4 }}>{note.title}</h1>
                 <span style={{ fontSize: 12, color: "var(--text3)" }}>{fmtDate(note.createdAt)}</span>
               </div>
               <div style={{ display: "flex", gap: 6 }}>
-                <Btn size="sm" variant="ghost" onClick={() => { setEditTitle(note.title); setEditContent(note.content); setEditing(true); setFullscreen(true); }} title="Open in fullscreen editor">⛶</Btn>
+                <Btn size="sm" variant="ghost" onClick={() => { setEditTitle(note.title); setEditContent(note.content); setEditing(true); setFullscreen(true); }}>⛶</Btn>
                 <Btn size="sm" variant="secondary" onClick={() => { setEditTitle(note.title); setEditContent(note.content); setEditing(true); }}>Edit</Btn>
                 <Btn size="sm" variant="danger" onClick={() => deleteNote(note.id)}>Delete</Btn>
               </div>
@@ -209,7 +206,7 @@ export function NotesView({ notes, projects, defaultProjectId }: NotesViewProps)
             <input
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
-              style={{ flex: 1, fontSize: 22, fontWeight: 800, fontFamily: DISPLAY, background: "transparent", border: "none", borderBottom: "2px solid var(--accent)", borderRadius: 0, padding: "6px 0", color: "var(--text)", outline: "none" }}
+              style={{ flex: 1, fontSize: 22, fontWeight: 800, background: "transparent", border: "none", borderBottom: "2px solid var(--accent)", borderRadius: 0, padding: "6px 0", color: "var(--text)", outline: "none" }}
             />
             <div style={{ display: "flex", gap: 8, flexShrink: 0 }}>
               <Btn onClick={async () => { await updateNote(); setFullscreen(false); }} disabled={pending}>Save</Btn>
@@ -222,7 +219,7 @@ export function NotesView({ notes, projects, defaultProjectId }: NotesViewProps)
               value={editContent}
               onChange={(e) => handleTA(e, "edit")}
               placeholder="Write in markdown... Type / for commands"
-              style={{ flex: 1, resize: "none", height: "100%", fontSize: 15, lineHeight: 1.8, fontFamily: BODY }}
+              style={{ flex: 1, resize: "none", height: "100%", fontSize: 15, lineHeight: 1.8, }}
             />
             {slashOpen && slashTarget === "edit" && (
               <SlashMenu position={slashPos} filter={slashFilter} onSelect={handleSlashSelect} onClose={() => setSlashOpen(false)} />

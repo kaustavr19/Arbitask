@@ -4,8 +4,6 @@ import { db } from "@/lib/db";
 import { calcStats } from "@/lib/gamification";
 import { ACHIEVEMENTS } from "@/lib/constants";
 
-const DISPLAY = `'Bricolage Grotesque', serif`;
-
 export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
@@ -50,7 +48,7 @@ export default async function DashboardPage() {
           </div>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 13, fontWeight: 600, color: stats.currentLevel.color, letterSpacing: 2, textTransform: "uppercase", marginBottom: 4 }}>Level {stats.currentLevel.level}</div>
-            <div style={{ fontSize: 36, fontWeight: 800, fontFamily: DISPLAY, letterSpacing: -1, marginBottom: 6, color: "var(--text)" }}>{stats.currentLevel.title}</div>
+            <div style={{ fontSize: 36, fontWeight: 800, letterSpacing: -1, marginBottom: 6, color: "var(--text)" }}>{stats.currentLevel.title}</div>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <div style={{ flex: 1, height: 12, borderRadius: 6, background: "var(--surface3)", overflow: "hidden" }}>
                 <div
@@ -61,7 +59,7 @@ export default async function DashboardPage() {
                   }}
                 />
               </div>
-              <span style={{ fontSize: 14, fontWeight: 800, fontFamily: DISPLAY, color: stats.currentLevel.color, minWidth: 60, textAlign: "right" }}>
+              <span style={{ fontSize: 14, fontWeight: 800, color: stats.currentLevel.color, minWidth: 60, textAlign: "right" }}>
                 {stats.xp} XP
               </span>
             </div>
@@ -76,7 +74,7 @@ export default async function DashboardPage() {
 
       {/* Stats */}
       <div style={{ marginBottom: 24 }}>
-        <h2 style={{ fontSize: 16, fontWeight: 800, fontFamily: DISPLAY, marginBottom: 14, display: "flex", alignItems: "center", gap: 8, color: "var(--text)" }}>
+        <h2 style={{ fontSize: 16, fontWeight: 800, marginBottom: 14, display: "flex", alignItems: "center", gap: 8, color: "var(--text)" }}>
           <span>📊</span> Productivity Stats
         </h2>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10 }}>
@@ -89,7 +87,7 @@ export default async function DashboardPage() {
           ].map((s, i) => (
             <div key={i} className="fi" style={{ padding: "18px 14px", borderRadius: 14, background: "var(--surface)", border: "1px solid var(--border)", textAlign: "center", animationDelay: `${i * 0.08}s`, animationFillMode: "both" }}>
               <div style={{ fontSize: 20, marginBottom: 6 }}>{s.i}</div>
-              <div style={{ fontSize: 28, fontWeight: 800, fontFamily: DISPLAY, color: s.c, letterSpacing: -1 }}>{s.v}</div>
+              <div style={{ fontSize: 28, fontWeight: 800, color: s.c, letterSpacing: -1 }}>{s.v}</div>
               <div style={{ fontSize: 10, color: "var(--text3)", fontWeight: 600, marginTop: 4, textTransform: "uppercase", letterSpacing: 0.5 }}>{s.l}</div>
             </div>
           ))}
@@ -98,7 +96,7 @@ export default async function DashboardPage() {
 
       {/* Achievements */}
       <div style={{ marginBottom: 24 }}>
-        <h2 style={{ fontSize: 16, fontWeight: 800, fontFamily: DISPLAY, marginBottom: 4, display: "flex", alignItems: "center", gap: 8, color: "var(--text)" }}>
+        <h2 style={{ fontSize: 16, fontWeight: 800, marginBottom: 4, display: "flex", alignItems: "center", gap: 8, color: "var(--text)" }}>
           <span>🏆</span> Achievements
         </h2>
         <p style={{ fontSize: 12, color: "var(--text3)", marginBottom: 14 }}>{earned.length} of {ACHIEVEMENTS.length} unlocked</p>
@@ -108,7 +106,7 @@ export default async function DashboardPage() {
               <div key={a.id} className="fi" style={{ padding: "16px 14px", borderRadius: 14, background: "linear-gradient(135deg, var(--accent-soft), transparent)", border: "1px solid var(--accent-glow)", animationDelay: `${i * 0.06}s`, animationFillMode: "both", display: "flex", alignItems: "center", gap: 12 }}>
                 <div style={{ width: 44, height: 44, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--accent-soft)", fontSize: 22, border: "2px solid var(--accent-glow)", boxShadow: "0 4px 12px var(--accent-glow)" }}>{a.emoji}</div>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, fontFamily: DISPLAY, color: "var(--text)" }}>{a.title}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text)" }}>{a.title}</div>
                   <div style={{ fontSize: 11, color: "var(--text2)", marginTop: 2 }}>{a.desc}</div>
                 </div>
               </div>
@@ -121,7 +119,7 @@ export default async function DashboardPage() {
               <div key={a.id} style={{ padding: "16px 14px", borderRadius: 14, background: "var(--surface)", border: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 12, opacity: 0.45 }}>
                 <div style={{ width: 44, height: 44, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--surface3)", fontSize: 22, filter: "grayscale(1)" }}>{a.emoji}</div>
                 <div>
-                  <div style={{ fontSize: 13, fontWeight: 700, fontFamily: DISPLAY, color: "var(--text3)" }}>{a.title}</div>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "var(--text3)" }}>{a.title}</div>
                   <div style={{ fontSize: 11, color: "var(--text3)", marginTop: 2 }}>{a.desc}</div>
                 </div>
               </div>
@@ -132,7 +130,7 @@ export default async function DashboardPage() {
 
       {/* XP Breakdown */}
       <div style={{ marginBottom: 24 }}>
-        <h2 style={{ fontSize: 16, fontWeight: 800, fontFamily: DISPLAY, marginBottom: 14, display: "flex", alignItems: "center", gap: 8, color: "var(--text)" }}>
+        <h2 style={{ fontSize: 16, fontWeight: 800, marginBottom: 14, display: "flex", alignItems: "center", gap: 8, color: "var(--text)" }}>
           <span>⚡</span> XP Breakdown
         </h2>
         <div style={{ borderRadius: 14, background: "var(--surface)", border: "1px solid var(--border)", overflow: "hidden" }}>
@@ -147,7 +145,7 @@ export default async function DashboardPage() {
               <span style={{ fontSize: 16, marginRight: 12 }}>{row.emoji}</span>
               <span style={{ flex: 1, fontSize: 13, fontWeight: 500, color: "var(--text)" }}>{row.label}</span>
               <span style={{ fontSize: 12, color: "var(--text3)", marginRight: 16 }}>{row.count} × {row.xpEach} XP</span>
-              <span style={{ fontSize: 14, fontWeight: 800, fontFamily: DISPLAY, color: "var(--accent)", minWidth: 55, textAlign: "right" }}>{row.count * row.xpEach} XP</span>
+              <span style={{ fontSize: 14, fontWeight: 800, color: "var(--accent)", minWidth: 55, textAlign: "right" }}>{row.count * row.xpEach} XP</span>
             </div>
           ))}
         </div>

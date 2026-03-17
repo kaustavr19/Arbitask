@@ -1,13 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { TASK_TYPES, STATUSES, PROJECT_COLORS } from "@/lib/constants";
+import { TASK_TYPES, STATUSES } from "@/lib/constants";
 import { renderMd } from "@/lib/markdown";
 import { Btn, Modal, AssigneeSelector } from "@/components/ui";
 import { FormattingToolbar } from "@/components/FormattingToolbar";
 
-const DISPLAY = `'Bricolage Grotesque', serif`;
-const BODY = `'Manrope', sans-serif`;
 
 function Label({ children }: { children: React.ReactNode }) {
   return <div style={{ fontSize: 12, fontWeight: 600, color: "var(--text2)", marginBottom: 6 }}>{children}</div>;
@@ -67,7 +65,6 @@ export function TaskDetailModal({ open, onClose, task, project, onUpdateTask, on
   }, [task]);
 
   if (!open || !task || !project) return null;
-  const pc = PROJECT_COLORS.find((c) => c.id === project.colorId) || PROJECT_COLORS[0];
   const assignedUserIds = task.assignees.map((a) => a.user.id);
 
   return (
@@ -77,14 +74,13 @@ export function TaskDetailModal({ open, onClose, task, project, onUpdateTask, on
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           style={{
-            fontSize: 22,
-            fontWeight: 800,
-            fontFamily: DISPLAY,
+            fontSize: 18,
+            fontWeight: 600,
             background: "transparent",
             border: "none",
             borderRadius: 0,
             padding: "0 0 12px 0",
-            borderBottom: `2px solid ${pc.hex}`,
+            borderBottom: "1px solid var(--border2)",
             marginBottom: 20,
             width: "100%",
           }}
@@ -135,7 +131,6 @@ export function TaskDetailModal({ open, onClose, task, project, onUpdateTask, on
                     cursor: "pointer",
                     fontSize: 11,
                     fontWeight: 600,
-                    fontFamily: BODY,
                     background: tab === t ? "var(--accent-soft)" : "transparent",
                     color: tab === t ? "var(--accent-text)" : "var(--text3)",
                   }}

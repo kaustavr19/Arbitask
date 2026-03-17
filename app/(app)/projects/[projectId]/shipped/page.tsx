@@ -18,7 +18,7 @@ export default async function ProjectShippedPage({ params }: { params: Promise<{
   });
 
   if (!project) notFound();
-  const isMember = project.members.some((m) => m.userId === session.user.id);
+  const isMember = project.members.some((m) => m.userId === session.user!.id);
   if (!isMember) redirect("/dashboard");
 
   return <ShippedView projects={[project]} />;
