@@ -27,8 +27,8 @@ A gamified project & idea management app — turn raw ideas into shipped work. K
 - **Project canvas** — clicking a project opens a per-project workspace with a tab bar (Kanban · List · Timeline · Notes · Shipped)
 - **Project-independent Add Task** — the header "+ Add Task" button is always visible and lets you pick the project inside the modal
 - **Collapsible sidebar** — click `«` to collapse to an icon-only strip; `»` to expand
-- **Themes** — dark/light mode + 3 atmosphere backgrounds (Ocean, Aurora, Minimal)
-- **Project accent colors** — each project colors the entire UI when active
+- **Themes** — dark / light / eye-protection (warm sepia) modes, cycled with a single toggle
+- **Project icons** — each project gets an emoji icon for instant visual identification
 
 ### Gamification
 - Earn XP for completing tasks, writing notes, creating projects
@@ -45,8 +45,8 @@ A gamified project & idea management app — turn raw ideas into shipped work. K
 | Language | TypeScript 5 |
 | Auth | [Auth.js v5](https://authjs.dev/) — Google OAuth + Credentials provider |
 | Database | [Prisma 5](https://www.prisma.io/) ORM — SQLite (dev) / PostgreSQL (prod) |
-| Styling | CSS-in-JS (inline styles) — zero external CSS library |
-| Fonts | Bricolage Grotesque, Manrope, JetBrains Mono (Google Fonts) |
+| Styling | CSS-in-JS (inline styles) + CSS custom properties — zero external CSS library |
+| Fonts | [Outfit](https://fonts.google.com/specimen/Outfit) (geometric sans-serif, Google Fonts) |
 
 ---
 
@@ -95,7 +95,7 @@ A gamified project & idea management app — turn raw ideas into shipped work. K
 │   ├── FormattingToolbar.tsx
 │   ├── SlashMenu.tsx
 │   ├── providers/
-│   │   ├── ThemeProvider.tsx               # Dark/light, atmosphere, accent color
+│   │   ├── ThemeProvider.tsx               # Dark/light/eye-protection, ambient gradients
 │   │   └── SessionProvider.tsx
 │   ├── ui/
 │   │   ├── Avatar.tsx                      # User avatar (image or initials)
@@ -209,8 +209,8 @@ Open **http://localhost:3000** — you'll be redirected to the login page.
 |--------|-----|
 | Create a project | Click **+ New idea…** at the bottom of the sidebar, or **+** next to "PROJECTS" |
 | Open a project | Click its name in the sidebar → lands on the project Kanban with the tab bar |
-| Edit / delete | Click the **⚙️** icon in the top-right header while inside a project |
-| Switch accent color | Edit project → pick a new color → the whole UI recolors instantly |
+| Edit / delete | Click **···** in the top-right header while inside a project |
+| Pick an icon | Create/edit a project → choose from 20 emoji icons for visual identification |
 
 ### Tasks
 
@@ -287,9 +287,15 @@ Open **http://localhost:3000** — you'll be redirected to the login page.
 
 ### Themes & Appearance
 
-- **☀️ / 🌙** — toggle dark/light mode
-- **Ocean / Aurora / Minimal** — change the background atmosphere
-- Active project color automatically sets the accent color across the UI
+Click the mode icon in the sidebar header to cycle through three modes:
+
+| Mode | Icon | Look |
+|------|------|------|
+| Dark | 🌙 | Warm dark surfaces with a deep orange accent and subtle ambient glow |
+| Light | ☀️ | Warm off-white background with a burnt-orange accent |
+| Eye protection | 👁 | Warm parchment/sepia tones — easier on the eyes in low light |
+
+All three modes use a consistent warm orange accent palette and subtle radial gradient orbs in the background for depth.
 
 ---
 
