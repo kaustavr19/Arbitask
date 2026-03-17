@@ -27,7 +27,7 @@ export default async function ListPage({ params }: { params: Promise<{ projectId
 
   if (!project) notFound();
 
-  const isMember = project.members.some((m) => m.userId === session.user.id);
+  const isMember = project.members.some((m) => m.userId === session.user!.id);
   if (!isMember) redirect("/dashboard");
 
   return <ListView project={project} />;

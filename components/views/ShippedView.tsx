@@ -1,5 +1,4 @@
-import { DISPLAY } from "@/lib/fonts";
-import { TASK_TYPES, PROJECT_COLORS } from "@/lib/constants";
+import { TASK_TYPES } from "@/lib/constants";
 import { fmtDate } from "@/lib/helpers";
 import { Badge, Empty } from "@/components/ui";
 
@@ -45,7 +44,7 @@ export function ShippedView({ projects }: ShippedViewProps) {
         ].map((s, i) => (
           <div key={i} style={{ padding: 16, borderRadius: 13, background: "var(--surface)", border: "1px solid var(--border)", textAlign: "center" }}>
             <div style={{ fontSize: 22, marginBottom: 4 }}>{s.i}</div>
-            <div style={{ fontSize: 24, fontWeight: 800, fontFamily: DISPLAY, color: s.c }}>{s.v}</div>
+            <div style={{ fontSize: 24, fontWeight: 800, color: s.c }}>{s.v}</div>
             <div style={{ fontSize: 10, color: "var(--text3)", fontWeight: 600, marginTop: 3, textTransform: "uppercase", letterSpacing: 0.5 }}>{s.l}</div>
           </div>
         ))}
@@ -56,18 +55,17 @@ export function ShippedView({ projects }: ShippedViewProps) {
         <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
           {shipped.map((task) => {
             const tt = TASK_TYPES.find((t) => t.id === task.type) || TASK_TYPES[5];
-            const tpc = PROJECT_COLORS.find((c) => c.id === task.pColorId) || PROJECT_COLORS[0];
             return (
               <div
                 key={task.id}
-                style={{ padding: "12px 16px", borderRadius: 11, background: "var(--surface)", border: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 12, borderLeft: `3px solid ${tpc.hex}` }}
+                style={{ padding: "11px 14px", borderRadius: 8, background: "var(--surface)", border: "1px solid var(--border)", display: "flex", alignItems: "center", gap: 12 }}
               >
-                <div style={{ fontSize: 18 }}>✅</div>
+                <div style={{ fontSize: 16 }}>✅</div>
                 <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, marginBottom: 3 }}>{task.title}</div>
+                  <div style={{ fontSize: 13, fontWeight: 500, marginBottom: 3 }}>{task.title}</div>
                   <div style={{ display: "flex", gap: 6 }}>
-                    <Badge color={tpc.hex} style={{ fontSize: 10 }}>{task.pName}</Badge>
-                    <Badge color={tpc.hex} style={{ fontSize: 10 }}>{tt.icon} {tt.label}</Badge>
+                    <Badge color="var(--accent)" style={{ fontSize: 10 }}>{task.pName}</Badge>
+                    <Badge color="var(--accent)" style={{ fontSize: 10 }}>{tt.icon} {tt.label}</Badge>
                   </div>
                 </div>
                 {task.dueDate && <span style={{ fontSize: 11, color: "var(--text3)" }}>{fmtDate(task.dueDate)}</span>}

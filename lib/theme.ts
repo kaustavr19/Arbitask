@@ -1,36 +1,94 @@
-import { PROJECT_COLORS } from "./constants";
+export type ThemeMode = "dark" | "light" | "eye";
 
-export function buildThemeVars(
-  mode: "dark" | "light",
-  atmId: string,
-  pcId: string
-): Record<string, string> {
-  const pc = PROJECT_COLORS.find((c) => c.id === pcId) || PROJECT_COLORS[0];
-  const dk = mode === "dark";
+export function buildThemeVars(mode: ThemeMode): Record<string, string> {
+
+  if (mode === "light") {
+    return {
+      "--bg":           "#F7F6F3",   // warm off-white, not clinical white
+      "--surface":      "#FFFFFF",
+      "--surface2":     "#F1F0EC",
+      "--surface3":     "#E8E6E0",
+      "--surface-modal":"#FFFFFF",
+      "--glass":        "rgba(0,0,0,0.02)",
+      "--border":       "rgba(30,20,10,0.09)",
+      "--border2":      "rgba(30,20,10,0.14)",
+      "--border-modal": "rgba(30,20,10,0.12)",
+      "--text":         "#17120A",   // warm near-black — 16:1 on white
+      "--text2":        "#6B5E4E",   // warm mid-brown — 5.5:1 on white ✓
+      "--text3":        "#A89880",   // warm light — used sparingly
+      "--accent":       "#C44800",   // deep burnt orange — 5.9:1 on white ✓
+      "--accent-soft":  "#C4480014",
+      "--accent-glow":  "#C4480022",
+      "--accent-text":  "#B04000",   // even deeper for text on tinted bg
+      "--shadow":       "rgba(40,20,5,0.09)",
+      "--shadow-lg":    "rgba(40,20,5,0.18)",
+      "--backdrop-val": "blur(14px) saturate(1.2)",
+      "--st-idea":      "#B45309",
+      "--st-planned":   "#4F46E5",
+      "--st-in_progress":"#C2410C",
+      "--st-blocked":   "#B91C1C",
+      "--st-done":      "#15803D",
+      "--st-archived":  "#78716C",
+    };
+  }
+
+  if (mode === "eye") {
+    return {
+      "--bg":           "#F4EBDA",   // warm parchment
+      "--surface":      "#EFE4CF",
+      "--surface2":     "#E5D8BE",
+      "--surface3":     "#D8C9A8",
+      "--surface-modal":"#F4EBDA",
+      "--glass":        "rgba(80,45,10,0.04)",
+      "--border":       "rgba(90,55,15,0.14)",
+      "--border2":      "rgba(90,55,15,0.22)",
+      "--border-modal": "rgba(90,55,15,0.18)",
+      "--text":         "#211508",   // very dark warm — 12:1 on parchment ✓
+      "--text2":        "#5A3A18",   // warm brown — 5.8:1 ✓
+      "--text3":        "#8C6030",   // mid warm — used sparingly
+      "--accent":       "#8C3600",   // deep orange on warm bg — 5.2:1 ✓
+      "--accent-soft":  "#8C360016",
+      "--accent-glow":  "#8C360024",
+      "--accent-text":  "#7A2E00",
+      "--shadow":       "rgba(60,30,5,0.14)",
+      "--shadow-lg":    "rgba(60,30,5,0.26)",
+      "--backdrop-val": "blur(12px) saturate(1.0)",
+      "--st-idea":      "#92400E",
+      "--st-planned":   "#4338CA",
+      "--st-in_progress":"#9A3412",
+      "--st-blocked":   "#991B1B",
+      "--st-done":      "#14532D",
+      "--st-archived":  "#57534E",
+    };
+  }
+
+  // dark — warm dark, not cold blue-gray
   return {
-    "--surface": dk ? "rgba(22,22,26,0.88)" : "rgba(255,255,255,0.88)",
-    "--surface2": dk ? "rgba(30,30,36,0.92)" : "rgba(240,240,244,0.92)",
-    "--surface3": dk ? "rgba(42,42,50,0.92)" : "rgba(228,228,235,0.92)",
-    "--surface-modal": dk ? "#252530" : "#fcfcfe",
-    "--glass": dk ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.02)",
-    "--border": dk ? "rgba(255,255,255,0.07)" : "rgba(0,0,0,0.07)",
-    "--border2": dk ? "rgba(255,255,255,0.12)" : "rgba(0,0,0,0.12)",
-    "--border-modal": dk ? "rgba(255,255,255,0.22)" : "rgba(0,0,0,0.13)",
-    "--text": dk ? "#EDEDEF" : "#1A1A1E",
-    "--text2": dk ? "#94949E" : "#6B6B76",
-    "--text3": dk ? "#5A5A66" : "#9A9AA6",
-    "--accent": pc.hex,
-    "--accent-soft": pc.hex + (dk ? "18" : "14"),
-    "--accent-glow": pc.hex + "22",
-    "--accent-text": dk ? pc.hex : pc.lightText,
-    "--shadow": dk ? "rgba(0,0,0,0.4)" : "rgba(0,0,0,0.08)",
-    "--backdrop-val": dk ? "blur(16px) saturate(1.4)" : "blur(16px) saturate(1.2)",
-    "--st-idea": "#EAB308",
-    "--st-planned": "#6366F1",
-    "--st-in_progress": "#F97316",
-    "--st-blocked": "#EF4444",
-    "--st-done": "#22C55E",
-    "--st-archived": "#71717A",
+    "--bg":           "#100F0D",   // very dark warm
+    "--surface":      "#171512",   // sidebar — dark warm
+    "--surface2":     "#1F1D19",   // cards, inputs
+    "--surface3":     "#272420",   // hover, active states
+    "--surface-modal":"#1B1916",
+    "--glass":        "rgba(255,240,220,0.03)",
+    "--border":       "rgba(255,240,220,0.08)",
+    "--border2":      "rgba(255,240,220,0.13)",
+    "--border-modal": "rgba(255,240,220,0.14)",
+    "--text":         "#F0EBE3",   // warm white — max readability
+    "--text2":        "#8C8070",   // warm mid — 4.8:1 on surface ✓
+    "--text3":        "#4A4440",   // dark warm — used sparingly
+    "--accent":       "#E8610A",   // vibrant warm orange
+    "--accent-soft":  "#E8610A1A",
+    "--accent-glow":  "#E8610A2A",
+    "--accent-text":  "#FF9055",   // light orange for text on dark — 5.2:1 ✓
+    "--shadow":       "rgba(0,0,0,0.55)",
+    "--shadow-lg":    "rgba(0,0,0,0.75)",
+    "--backdrop-val": "blur(16px) saturate(1.4)",
+    "--st-idea":      "#F59E0B",
+    "--st-planned":   "#818CF8",
+    "--st-in_progress":"#FB923C",
+    "--st-blocked":   "#F87171",
+    "--st-done":      "#4ADE80",
+    "--st-archived":  "#78716C",
   };
 }
 

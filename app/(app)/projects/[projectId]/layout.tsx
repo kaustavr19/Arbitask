@@ -53,7 +53,6 @@ export default function ProjectLayout({ children }: { children: React.ReactNode 
                 borderRadius: "6px 6px 0 0",
                 background: active ? "var(--accent)10" : "transparent",
                 transition: "all .15s",
-                fontFamily: "'Manrope', sans-serif",
                 whiteSpace: "nowrap",
               }}
             >

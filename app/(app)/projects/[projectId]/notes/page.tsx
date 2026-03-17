@@ -11,7 +11,7 @@ export default async function ProjectNotesPage({ params }: { params: Promise<{ p
 
   const [notes, project] = await Promise.all([
     db.note.findMany({
-      where: { authorId: session.user.id, projectId },
+      where: { authorId: session.user!.id, projectId },
       orderBy: { createdAt: "desc" },
     }),
     db.project.findUnique({
@@ -21,7 +21,7 @@ export default async function ProjectNotesPage({ params }: { params: Promise<{ p
   ]);
 
   if (!project) notFound();
-  const isMember = project.members.some((m) => m.userId === session.user.id);
+  const isMember = project.members.some((m) => m.userId === session.user!.id);
   if (!isMember) redirect("/dashboard");
 
   const projectInfo = [{ id: project.id, name: project.name, colorId: "rose" }];

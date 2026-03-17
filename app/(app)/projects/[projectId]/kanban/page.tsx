@@ -32,7 +32,7 @@ export default async function KanbanPage({
   if (!project) notFound();
 
   // Verify user is a member
-  const isMember = project.members.some((m) => m.userId === session.user.id);
+  const isMember = project.members.some((m) => m.userId === session.user!.id);
   if (!isMember) redirect("/dashboard");
 
   return <KanbanView project={project} initialAddStatus={sp.new ? "idea" : undefined} />;

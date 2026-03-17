@@ -23,34 +23,34 @@ export const STATUSES = [
   { id: "archived", label: "Archived", emoji: "📦" },
 ];
 
+// kept for DB backward compat (colorId field stores icon id now)
 export const PROJECT_COLORS = [
   { id: "rose", hex: "#F43F5E", lightText: "#9F1239" },
-  { id: "violet", hex: "#8B5CF6", lightText: "#5B21B6" },
-  { id: "cyan", hex: "#06B6D4", lightText: "#155E75" },
-  { id: "emerald", hex: "#10B981", lightText: "#065F46" },
-  { id: "amber", hex: "#F59E0B", lightText: "#92400E" },
-  { id: "blue", hex: "#3B82F6", lightText: "#1E40AF" },
-  { id: "pink", hex: "#EC4899", lightText: "#9D174D" },
-  { id: "teal", hex: "#14B8A6", lightText: "#115E59" },
 ];
 
-export const ATMOSPHERES = [
-  {
-    id: "ocean", label: "Ocean", icon: "🌊",
-    darkGrad: "radial-gradient(ellipse at 20% 80%,#0A2E4D 0%,#0C1929 40%,#080F18 100%)",
-    lightGrad: "radial-gradient(ellipse at 20% 80%,#D4EAF7 0%,#E8F1F8 40%,#F0F6FA 100%)",
-  },
-  {
-    id: "aurora", label: "Aurora", icon: "🌌",
-    darkGrad: "radial-gradient(ellipse at 70% 20%,#1A0A2E 0%,#0D1117 50%,#080B10 100%),radial-gradient(ellipse at 20% 80%,#0A2E2A 0%,transparent 60%)",
-    lightGrad: "radial-gradient(ellipse at 70% 20%,#F0E6FF 0%,#F5F0FA 50%,#F8F6FB 100%),radial-gradient(ellipse at 20% 80%,#E6FAF8 0%,transparent 60%)",
-  },
-  {
-    id: "minimal", label: "Minimal", icon: "◻️",
-    darkGrad: "linear-gradient(180deg,#111113 0%,#0D0D0F 100%)",
-    lightGrad: "linear-gradient(180deg,#FAFAFA 0%,#F5F5F5 100%)",
-  },
+export const PROJECT_ICONS = [
+  { id: "rocket",   emoji: "🚀" },
+  { id: "idea",     emoji: "💡" },
+  { id: "lightning",emoji: "⚡" },
+  { id: "target",   emoji: "🎯" },
+  { id: "fire",     emoji: "🔥" },
+  { id: "code",     emoji: "💻" },
+  { id: "brain",    emoji: "🧠" },
+  { id: "chart",    emoji: "📈" },
+  { id: "design",   emoji: "🎨" },
+  { id: "globe",    emoji: "🌐" },
+  { id: "shield",   emoji: "🛡️" },
+  { id: "gear",     emoji: "⚙️" },
+  { id: "book",     emoji: "📚" },
+  { id: "leaf",     emoji: "🌿" },
+  { id: "gem",      emoji: "💎" },
+  { id: "magic",    emoji: "🔮" },
+  { id: "box",      emoji: "📦" },
+  { id: "star",     emoji: "⭐" },
+  { id: "build",    emoji: "🏗️" },
+  { id: "sparkle",  emoji: "✨" },
 ];
+
 
 export const SLASH_COMMANDS = [
   { id: "h1", label: "Heading 1", desc: "Large heading", icon: "H1", insert: "# " },

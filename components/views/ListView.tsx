@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { STATUSES, TASK_TYPES, PROJECT_COLORS } from "@/lib/constants";
+import { STATUSES, TASK_TYPES } from "@/lib/constants";
 import { stC } from "@/lib/theme";
 import { fmtDate } from "@/lib/helpers";
 import { Badge, Empty } from "@/components/ui";
@@ -61,40 +61,24 @@ export function ListView({ project, projects }: ListViewProps) {
     : null;
   const detailProject = detailEntry?._project || null;
 
-  function getProjectColor(projectId: string) {
-    const p = allProjects.find((p) => p.id === projectId);
-    return PROJECT_COLORS.find((c) => c.id === (p?.colorId || "rose")) || PROJECT_COLORS[0];
-  }
-
   async function updateTask(taskId: string, updates: Record<string, unknown>) {
-    await fetch(`/api/tasks/${taskId}`, {
+    fetch(`/api/tasks/${taskId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updates),
-    });
-    router.refresh();
+    }).then(() => router.refresh());
   }
 
-  async function deleteTask(taskId: string) {
-    await fetch(`/api/tasks/${taskId}`, { method: "DELETE" });
-    router.refresh();
+  function deleteTask(taskId: string) {
+    fetch(`/api/tasks/${taskId}`, { method: "DELETE" }).then(() => router.refresh());
   }
 
   async function handleAssigneeChange(taskId: string, userId: string, selected: boolean) {
-    if (selected) {
-      await fetch(`/api/tasks/${taskId}/assignees`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId }),
-      });
-    } else {
-      await fetch(`/api/tasks/${taskId}/assignees`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId }),
-      });
-    }
-    router.refresh();
+    fetch(`/api/tasks/${taskId}/assignees`, {
+      method: selected ? "POST" : "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId }),
+    }).then(() => router.refresh());
   }
 
   if (!sorted.length) return <Empty icon="📝" title="No tasks yet" sub="Add tasks from Kanban view" />;
@@ -130,23 +114,24 @@ export function ListView({ project, projects }: ListViewProps) {
         {sorted.map((task) => {
           const tt = TASK_TYPES.find((t) => t.id === task.type) || TASK_TYPES[5];
           const sc = stC(task.status);
-          const pc = getProjectColor(task.projectId);
           return (
             <div
               key={task.id}
               onClick={() => setDetailTaskId(task.id)}
-              style={{ display: "grid", gridTemplateColumns: gridCols, gap: 10, alignItems: "center", padding: "11px 14px", borderRadius: 10, marginBottom: 3, background: "var(--surface)", border: "1px solid var(--border)", borderLeft: `3px solid ${pc.hex}`, cursor: "pointer" }}
+              style={{ display: "grid", gridTemplateColumns: gridCols, gap: 10, alignItems: "center", padding: "10px 14px", borderRadius: 8, marginBottom: 2, background: "var(--surface)", border: "1px solid var(--border)", cursor: "pointer" }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--border2)"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--border)"; }}
             >
-              <span style={{ fontSize: 13, fontWeight: 500, display: "flex", alignItems: "center", gap: 6, color: "var(--text)" }}>
+              <span style={{ fontSize: 13, fontWeight: 400, display: "flex", alignItems: "center", gap: 6, color: "var(--text)" }}>
                 {task.title}
                 {task.description && <span style={{ fontSize: 10, color: "var(--text3)" }}>📝</span>}
               </span>
               {isGlobal && (
-                <span style={{ fontSize: 10, color: pc.hex, background: pc.hex + "18", padding: "2px 7px", borderRadius: 6, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                <span style={{ fontSize: 10, color: "var(--text2)", background: "var(--surface2)", padding: "2px 7px", borderRadius: 5, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                   {task._project.name}
                 </span>
               )}
-              <Badge color={pc.hex} style={{ fontSize: 10 }}>{tt.icon} {tt.label}</Badge>
+              <Badge color="var(--accent)" style={{ fontSize: 10 }}>{tt.icon} {tt.label}</Badge>
               <select
                 value={task.status}
                 onClick={(e) => e.stopPropagation()}

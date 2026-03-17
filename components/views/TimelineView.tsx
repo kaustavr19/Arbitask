@@ -1,11 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { PROJECT_COLORS, STATUSES } from "@/lib/constants";
+import { STATUSES } from "@/lib/constants";
 import { fmtDate } from "@/lib/helpers";
 import { Empty } from "@/components/ui";
-
-const BODY = `'Manrope', sans-serif`;
 
 type Task = {
   id: string;
@@ -42,11 +40,6 @@ export function TimelineView({ project, projects }: TimelineViewProps) {
   const filteredProjects = filterProjectId
     ? allProjects.filter((p) => p.id === filterProjectId)
     : allProjects;
-
-  function getProjectColor(projectId: string) {
-    const p = allProjects.find((p) => p.id === projectId);
-    return PROJECT_COLORS.find((c) => c.id === (p?.colorId || "rose")) || PROJECT_COLORS[0];
-  }
 
   const allTasksWithProject = filteredProjects.flatMap((p) =>
     p.tasks.map((t) => ({ ...t, _project: p }))
@@ -116,7 +109,7 @@ export function TimelineView({ project, projects }: TimelineViewProps) {
           return (
             <div
               key={i}
-              style={{ position: "absolute", left: labelW + off * px, fontSize: 10, fontWeight: 700, color: "var(--text3)", letterSpacing: 0.5, textTransform: "uppercase", borderLeft: "1px solid var(--border)", paddingLeft: 8, height: "100%", display: "flex", alignItems: "center", fontFamily: BODY }}
+              style={{ position: "absolute", left: labelW + off * px, fontSize: 10, fontWeight: 700, color: "var(--text3)", letterSpacing: 0.5, textTransform: "uppercase", borderLeft: "1px solid var(--border)", paddingLeft: 8, height: "100%", display: "flex", alignItems: "center", }}
             >
               {m.toLocaleDateString("en-US", { month: "short", year: "numeric" })}
             </div>
@@ -128,12 +121,11 @@ export function TimelineView({ project, projects }: TimelineViewProps) {
           const start = (new Date(task.startDate!).getTime() - minD.getTime()) / 864e5;
           const dur = Math.max((new Date(task.dueDate!).getTime() - new Date(task.startDate!).getTime()) / 864e5, 1);
           const st = STATUSES.find((s) => s.id === task.status);
-          const pc = getProjectColor(task.projectId);
           return (
             <div key={task.id} style={{ display: "flex", alignItems: "center", height: 38 }}>
-              <div style={{ width: labelW, flexShrink: 0, paddingRight: 12, fontSize: 13, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "var(--text)" }}>
+              <div style={{ width: labelW, flexShrink: 0, paddingRight: 12, fontSize: 13, fontWeight: 400, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "var(--text)" }}>
                 {isGlobal && (
-                  <span style={{ fontSize: 10, color: pc.hex, marginRight: 6, fontWeight: 700 }}>
+                  <span style={{ fontSize: 10, color: "var(--text3)", marginRight: 5, fontWeight: 500 }}>
                     {task._project.name} ·
                   </span>
                 )}
@@ -141,7 +133,7 @@ export function TimelineView({ project, projects }: TimelineViewProps) {
               </div>
               <div style={{ position: "relative", flex: 1 }}>
                 <div
-                  style={{ position: "absolute", left: start * px, width: Math.max(dur * px, 28), height: 30, borderRadius: 8, background: `linear-gradient(135deg,${pc.hex}BB,${pc.hex}66)`, border: `1px solid ${pc.hex}88`, display: "flex", alignItems: "center", gap: 5, paddingLeft: 8, fontSize: 11, fontWeight: 600, color: "#FFF" }}
+                  style={{ position: "absolute", left: start * px, width: Math.max(dur * px, 28), height: 28, borderRadius: 6, background: "var(--accent)", border: "1px solid var(--accent-soft)", display: "flex", alignItems: "center", gap: 5, paddingLeft: 8, fontSize: 11, fontWeight: 500, color: "#FFF", opacity: 0.9 }}
                 >
                   <span>{st?.emoji}</span>
                   {dur * px > 100 && (

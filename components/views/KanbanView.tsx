@@ -2,15 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { STATUSES, TASK_TYPES, PROJECT_COLORS } from "@/lib/constants";
+import { STATUSES, TASK_TYPES } from "@/lib/constants";
 import { stC } from "@/lib/theme";
 import { fmtDate } from "@/lib/helpers";
 import { Badge, Empty, Avatar } from "@/components/ui";
 import { TaskModal } from "@/components/modals/TaskModal";
 import { TaskDetailModal } from "@/components/modals/TaskDetailModal";
-
-const DISPLAY = `'Bricolage Grotesque', serif`;
-const BODY = `'Manrope', sans-serif`;
 
 type TaskUser = { id: string; name: string | null; image: string | null };
 type Member = { id: string; userId: string; role: string; user: TaskUser };
@@ -58,49 +55,40 @@ export function KanbanView({ project, projects, initialAddStatus }: KanbanViewPr
     p.tasks.map((t) => ({ ...t, _project: p }))
   );
 
-  function getProjectColor(projectId: string) {
-    const p = allProjects.find((p) => p.id === projectId);
-    return PROJECT_COLORS.find((c) => c.id === (p?.colorId || "rose")) || PROJECT_COLORS[0];
-  }
-
   const detailTaskEntry = allTasks.find((t) => t.id === detailTaskId);
   const detailTask = detailTaskEntry
     ? (({ _project: _p, ...rest }) => rest as Task)(detailTaskEntry)
     : null;
   const detailProject = detailTaskEntry?._project || null;
 
-  async function updateTaskStatus(taskId: string, newStatus: string) {
-    await fetch(`/api/tasks/${taskId}`, {
+  function updateTaskStatus(taskId: string, newStatus: string) {
+    fetch(`/api/tasks/${taskId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status: newStatus }),
-    });
-    router.refresh();
+    }).then(() => router.refresh());
   }
 
   async function createTask(data: { title: string; type: string; status: string; startDate: string; dueDate: string; projectId?: string }) {
     const pid = data.projectId || project?.id;
     if (!pid) return;
-    await fetch("/api/tasks", {
+    fetch("/api/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ projectId: pid, title: data.title, type: data.type, status: data.status, startDate: data.startDate, dueDate: data.dueDate }),
-    });
-    router.refresh();
+    }).then(() => router.refresh());
   }
 
-  async function deleteTask(taskId: string) {
-    await fetch(`/api/tasks/${taskId}`, { method: "DELETE" });
-    router.refresh();
+  function deleteTask(taskId: string) {
+    fetch(`/api/tasks/${taskId}`, { method: "DELETE" }).then(() => router.refresh());
   }
 
   async function updateTask(taskId: string, updates: Record<string, unknown>) {
-    await fetch(`/api/tasks/${taskId}`, {
+    fetch(`/api/tasks/${taskId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updates),
-    });
-    router.refresh();
+    }).then(() => router.refresh());
   }
 
   async function handleAssigneeChange(taskId: string, userId: string, selected: boolean) {
@@ -159,13 +147,12 @@ export function KanbanView({ project, projects, initialAddStatus }: KanbanViewPr
             >
               <div style={{ display: "flex", alignItems: "center", gap: 7, padding: "6px 4px 12px" }}>
                 <span style={{ fontSize: 15 }}>{status.emoji}</span>
-                <span style={{ fontSize: 12, fontWeight: 700, fontFamily: DISPLAY, color: "var(--text)" }}>{status.label}</span>
+                <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text)" }}>{status.label}</span>
                 <span style={{ fontSize: 10, fontWeight: 600, color: sc, background: sc + "18", padding: "2px 7px", borderRadius: 10 }}>{tasks.length}</span>
               </div>
               <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 7, overflowY: "auto" }}>
                 {tasks.map((task) => {
                   const tt = TASK_TYPES.find((t) => t.id === task.type) || TASK_TYPES[5];
-                  const pc = getProjectColor(task.projectId);
                   return (
                     <div
                       key={task.id}
@@ -173,23 +160,23 @@ export function KanbanView({ project, projects, initialAddStatus }: KanbanViewPr
                       onDragStart={() => setDrag(task.id)}
                       onDragEnd={() => setDrag(null)}
                       onClick={() => setDetailTaskId(task.id)}
-                      style={{ padding: 13, borderRadius: 11, background: "var(--surface)", border: "1px solid var(--border)", cursor: "pointer", transition: "all .2s", opacity: drag === task.id ? 0.4 : 1, borderLeft: `3px solid ${pc.hex}` }}
-                      onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 24px var(--shadow)"; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "none"; }}
+                      style={{ padding: 12, borderRadius: 9, background: "var(--surface)", border: "1px solid var(--border)", cursor: "pointer", transition: "border-color .15s, box-shadow .15s", opacity: drag === task.id ? 0.4 : 1 }}
+                      onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--border2)"; e.currentTarget.style.boxShadow = "0 4px 16px var(--shadow)"; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.boxShadow = "none"; }}
                     >
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 7 }}>
-                        <span style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.4, flex: 1, color: "var(--text)" }}>{task.title}</span>
+                        <span style={{ fontSize: 13, fontWeight: 500, lineHeight: 1.4, flex: 1, color: "var(--text)" }}>{task.title}</span>
                         <button
                           onClick={(e) => { e.stopPropagation(); deleteTask(task.id); }}
-                          style={{ background: "none", border: "none", color: "var(--text3)", cursor: "pointer", fontSize: 11, opacity: 0.4, padding: "2px" }}
+                          style={{ background: "none", border: "none", color: "var(--text3)", cursor: "pointer", fontSize: 11, opacity: 0.5, padding: "2px" }}
                         >
                           ✕
                         </button>
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
-                        <Badge color={pc.hex} style={{ fontSize: 10 }}>{tt.icon} {tt.label}</Badge>
+                        <Badge color="var(--accent)" style={{ fontSize: 10 }}>{tt.icon} {tt.label}</Badge>
                         {isGlobal && (
-                          <span style={{ fontSize: 10, color: pc.hex, background: pc.hex + "18", padding: "2px 6px", borderRadius: 6, fontWeight: 600 }}>
+                          <span style={{ fontSize: 10, color: "var(--text2)", background: "var(--surface2)", padding: "2px 6px", borderRadius: 5, fontWeight: 500 }}>
                             {task._project.name}
                           </span>
                         )}
@@ -215,7 +202,7 @@ export function KanbanView({ project, projects, initialAddStatus }: KanbanViewPr
                 })}
                 <button
                   onClick={() => { setInitialStatus(status.id); setShowTaskModal(true); }}
-                  style={{ padding: 9, borderRadius: 9, border: "1px dashed var(--border2)", background: "transparent", color: "var(--text3)", cursor: "pointer", fontSize: 12, fontFamily: BODY, fontWeight: 500 }}
+                  style={{ padding: 9, borderRadius: 9, border: "1px dashed var(--border2)", background: "transparent", color: "var(--text3)", cursor: "pointer", fontSize: 12, fontWeight: 500 }}
                 >
                   + Add task
                 </button>
