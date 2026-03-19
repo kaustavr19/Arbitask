@@ -28,6 +28,10 @@ type Project = {
   name: string;
   description: string | null;
   colorId: string;
+  status: string;
+  priority: string;
+  startDate: Date | null;
+  targetDate: Date | null;
   createdAt: Date;
   ownerId: string;
   tasks: Task[];
@@ -43,6 +47,7 @@ interface AppShellProps {
 
 const VIEW_LABELS: Record<string, string> = {
   dashboard: "Dashboard",
+  overview:  "Overview",
   kanban:    "Kanban Board",
   list:      "List View",
   timeline:  "Timeline",
@@ -63,6 +68,7 @@ function Shell({ projects, stats, user, children }: AppShellProps) {
   const projectId = params?.projectId as string | undefined;
 
   function getView() {
+    if (pathname.includes("/overview")) return "overview";
     if (pathname.includes("/kanban"))   return "kanban";
     if (pathname.includes("/list"))     return "list";
     if (pathname.includes("/timeline")) return "timeline";
@@ -76,7 +82,7 @@ function Shell({ projects, stats, user, children }: AppShellProps) {
   }
 
   function onSelectProject(pid: string) {
-    router.push(`/projects/${pid}/kanban`);
+    router.push(`/projects/${pid}/overview`);
   }
 
   const activeProject = projectId ? projects.find((p) => p.id === projectId) : null;
@@ -167,7 +173,7 @@ function Shell({ projects, stats, user, children }: AppShellProps) {
             const res = await fetch("/api/projects", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(proj),
+              body: JSON.stringify({ ...proj, colorId: proj.colorId }),
             });
             if (res.ok) {
               const data = await res.json();

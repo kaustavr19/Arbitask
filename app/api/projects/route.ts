@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json();
-  const { name, description, colorId } = body;
+  const { name, description, colorId, status, priority, startDate, targetDate } = body;
 
   if (!name) return NextResponse.json({ error: "Name required" }, { status: 400 });
 
@@ -37,6 +37,10 @@ export async function POST(req: NextRequest) {
       name,
       description: description || null,
       colorId: colorId || "rose",
+      status: status || "backlog",
+      priority: priority || "no_priority",
+      startDate: startDate ? new Date(startDate) : null,
+      targetDate: targetDate ? new Date(targetDate) : null,
       ownerId: session.user.id,
       members: {
         create: { userId: session.user.id, role: Role.OWNER },

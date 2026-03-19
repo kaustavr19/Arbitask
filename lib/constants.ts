@@ -28,6 +28,23 @@ export const PROJECT_COLORS = [
   { id: "rose", hex: "#F43F5E", lightText: "#9F1239" },
 ];
 
+export const PROJECT_STATUSES = [
+  { id: "backlog",     label: "Backlog",     icon: "○", color: "#8C8070" },
+  { id: "in_progress", label: "In Progress", icon: "◐", color: "#E8610A" },
+  { id: "on_track",   label: "On Track",    icon: "◉", color: "#22C55E" },
+  { id: "at_risk",    label: "At Risk",     icon: "⚠", color: "#FBBF24" },
+  { id: "completed",  label: "Completed",   icon: "●", color: "#4ADE80" },
+  { id: "cancelled",  label: "Cancelled",   icon: "✕", color: "#6B7280" },
+];
+
+export const PROJECT_PRIORITIES = [
+  { id: "no_priority", label: "No priority", icon: "···" },
+  { id: "urgent",      label: "Urgent",      icon: "🔴" },
+  { id: "high",        label: "High",        icon: "🔶" },
+  { id: "medium",      label: "Medium",      icon: "🔵" },
+  { id: "low",         label: "Low",         icon: "⚪" },
+];
+
 export const PROJECT_ICONS = [
   { id: "rocket",   emoji: "🚀" },
   { id: "idea",     emoji: "💡" },
