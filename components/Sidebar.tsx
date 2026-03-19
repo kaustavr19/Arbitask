@@ -237,8 +237,11 @@ export function Sidebar({
             <button type="submit" style={{ background: "none", border: "none", color: "var(--text3)", cursor: "pointer", fontSize: 11, fontWeight: 500, }}>Out</button>
           </form>
         </div>
-        <button onClick={onNewProject} style={{ width: "100%", marginTop: 8, padding: "9px 12px", borderRadius: 7, border: "1px dashed var(--border2)", background: "none", color: "var(--text3)", cursor: "pointer", fontSize: 13, fontWeight: 400, display: "flex", alignItems: "center", gap: 8 }}>
-          💡 New idea...
+        <button
+          onClick={onNewProject}
+          style={{ width: "100%", marginTop: 8, padding: "10px 14px", borderRadius: 8, border: "none", background: "linear-gradient(135deg, #F07020 0%, #E8610A 100%)", color: "#FFF", cursor: "pointer", fontSize: 13, fontWeight: 600, display: "flex", alignItems: "center", gap: 8, boxShadow: "0 2px 10px rgba(232,97,10,0.28)", letterSpacing: 0.1 }}
+        >
+          <span>+</span> New project
         </button>
       </div>
     </div>

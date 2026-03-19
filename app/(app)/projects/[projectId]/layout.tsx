@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 
 const TABS = [
-  { id: "kanban", label: "Kanban", icon: "🗂" },
-  { id: "list", label: "List", icon: "📋" },
-  { id: "timeline", label: "Timeline", icon: "📅" },
-  { id: "notes", label: "Notes", icon: "📝" },
-  { id: "shipped", label: "Shipped", icon: "🚀" },
+  { id: "overview",  label: "Overview",  icon: "◎" },
+  { id: "kanban",   label: "Kanban",    icon: "🗂" },
+  { id: "list",     label: "List",      icon: "📋" },
+  { id: "timeline", label: "Timeline",  icon: "📅" },
+  { id: "notes",    label: "Notes",     icon: "📝" },
+  { id: "shipped",  label: "Shipped",   icon: "🚀" },
 ];
 
 export default function ProjectLayout({ children }: { children: React.ReactNode }) {

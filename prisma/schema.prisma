@@ -67,11 +67,16 @@ model VerificationToken {
 // ─── App models ──────────────────────────────────────────────────────────────
 
 model Project {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   name        String
   description String?
-  colorId     String   @default("rose")
-  createdAt   DateTime @default(now())
+  colorId     String    @default("rose")
+  status      String    @default("backlog")
+  priority    String    @default("no_priority")
+  lead        String?
+  startDate   DateTime?
+  targetDate  DateTime?
+  createdAt   DateTime  @default(now())
   ownerId     String
 
   owner   User            @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Cascade)

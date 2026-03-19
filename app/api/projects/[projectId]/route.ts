@@ -21,6 +21,11 @@ export async function PATCH(req: NextRequest, { params }: Params) {
       name: body.name,
       description: body.description,
       colorId: body.colorId,
+      ...(body.status !== undefined && { status: body.status }),
+      ...(body.priority !== undefined && { priority: body.priority }),
+      ...(body.lead !== undefined && { lead: body.lead || null }),
+      ...(body.startDate !== undefined && { startDate: body.startDate ? new Date(body.startDate) : null }),
+      ...(body.targetDate !== undefined && { targetDate: body.targetDate ? new Date(body.targetDate) : null }),
     },
   });
 
