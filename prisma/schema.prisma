@@ -73,6 +73,7 @@ model Project {
   colorId     String    @default("rose")
   status      String    @default("backlog")
   priority    String    @default("no_priority")
+  lead        String?
   startDate   DateTime?
   targetDate  DateTime?
   createdAt   DateTime  @default(now())

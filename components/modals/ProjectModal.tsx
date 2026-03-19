@@ -10,6 +10,7 @@ type ProjectSaveData = {
   colorId: string;
   status: string;
   priority: string;
+  lead: string;
   startDate: string;
   targetDate: string;
 };
@@ -17,15 +18,17 @@ type ProjectSaveData = {
 interface ProjectModalProps {
   onClose: () => void;
   onSave: (data: ProjectSaveData) => Promise<void>;
-  initialData?: { name: string; description: string; colorId: string; status?: string; priority?: string; startDate?: string; targetDate?: string };
+  initialData?: { name: string; description: string; colorId: string; status?: string; priority?: string; lead?: string; startDate?: string; targetDate?: string };
 }
 
 export function ProjectModal({ onClose, onSave, initialData }: ProjectModalProps) {
   const [name, setName] = useState(initialData?.name || "");
   const [summary, setSummary] = useState(initialData?.description || "");
+  const [desc, setDesc] = useState("");
   const [iconId, setIconId] = useState(initialData?.colorId || "rocket");
   const [status, setStatus] = useState(initialData?.status || "backlog");
   const [priority, setPriority] = useState(initialData?.priority || "no_priority");
+  const [lead, setLead] = useState(initialData?.lead || "");
   const [startDate, setStartDate] = useState(initialData?.startDate || "");
   const [targetDate, setTargetDate] = useState(initialData?.targetDate || "");
   const [showIconPicker, setShowIconPicker] = useState(false);
@@ -112,6 +115,17 @@ export function ProjectModal({ onClose, onSave, initialData }: ProjectModalProps
               {PROJECT_PRIORITIES.map((p) => <option key={p.id} value={p.id}>{p.icon} {p.label}</option>)}
             </select>
 
+            {/* Lead / SPOC */}
+            <label style={{ ...chipSelect, display: "flex", alignItems: "center", gap: 5, padding: "3px 4px 3px 10px" }}>
+              <span style={{ fontSize: 12, color: "var(--text3)", flexShrink: 0, whiteSpace: "nowrap" }}>👤 Lead</span>
+              <input
+                value={lead}
+                onChange={(e) => setLead(e.target.value)}
+                placeholder="Name or email"
+                style={{ background: "transparent", border: "none", padding: "2px 6px", fontSize: 12, color: "var(--text)", minWidth: 90, maxWidth: 160, outline: "none" }}
+              />
+            </label>
+
             <label style={{ ...chipSelect, display: "flex", alignItems: "center", gap: 5, color: startDate ? "var(--text2)" : "var(--text3)" }}>
               <span style={{ fontSize: 11 }}>▷</span>
               Start
@@ -127,8 +141,8 @@ export function ProjectModal({ onClose, onSave, initialData }: ProjectModalProps
 
           {/* Description */}
           <textarea
-            value={""}
-            onChange={() => {}}
+            value={desc}
+            onChange={(e) => setDesc(e.target.value)}
             rows={6}
             placeholder="Write a description, a project brief, or collect ideas..."
             style={{ background: "transparent", border: "none", borderRadius: 0, padding: 0, resize: "none", fontSize: 14, color: "var(--text)", lineHeight: 1.7, width: "100%" }}
@@ -142,7 +156,7 @@ export function ProjectModal({ onClose, onSave, initialData }: ProjectModalProps
             onClick={async () => {
               if (!name.trim() || saving) return;
               setSaving(true);
-              await onSave({ name, description: summary, colorId: iconId, status, priority, startDate, targetDate });
+              await onSave({ name, description: summary || desc, colorId: iconId, status, priority, lead, startDate, targetDate });
               setSaving(false);
             }}
             disabled={!name.trim() || saving}
